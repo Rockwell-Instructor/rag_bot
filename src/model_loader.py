@@ -2,13 +2,18 @@ import os
 from dotenv import load_dotenv
 
 from llama_index.llms.google_genai import GoogleGenAI
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 from src.config import (
+    # LLM Params
     LLM_MODEL,
     LLM_MAX_NEW_TOKENS,
     LLM_TEMPERATURE,
     LLM_TOP_P,
-    LLM_REPETITION_PENALTY
+    LLM_REPETITION_PENALTY,
+    # Embedding Model Params
+    EMBEDDING_MODEL_NAME,
+    EMBEDDING_CACHE_PATH,
 )
 
 
@@ -33,4 +38,16 @@ def initialise_llm() -> GoogleGenAI:
         temperature=LLM_TEMPERATURE,
         top_p=LLM_TOP_P,
         repetition_penalty=LLM_REPETITION_PENALTY
+    )
+
+
+def get_embedding_model() -> HuggingFaceEmbedding:
+    """Initialises and returns the HuggingFace embedding model"""
+    
+    # Create the cache directory if it doesn't exist
+    EMBEDDING_CACHE_PATH.mkdir(parents=True, exist_ok=True)
+
+    return HuggingFaceEmbedding(
+        model_name=EMBEDDING_MODEL_NAME,
+        cache_folder=EMBEDDING_CACHE_PATH.as_posix()
     )
